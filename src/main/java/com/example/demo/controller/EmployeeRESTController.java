@@ -39,7 +39,7 @@ public class EmployeeRESTController {
 	 */
 	@RequestMapping(value = "/employees/{empId}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
-	public Employee getEmployee(@PathVariable("empId") Long empId) {
+	public Employee getEmployee(@PathVariable("empId") Integer empId) {
 		return employeeService.getEmp(empId);
 	}
 	
@@ -74,7 +74,7 @@ public class EmployeeRESTController {
 	 */
 	@RequestMapping(value = "/employees/{empId}", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
-	public String deleteEmployee(@PathVariable("empId") Long empId) {
+	public String deleteEmployee(@PathVariable("empId") Integer empId) {
 		System.out.println("(Service Side) Deleting employe with ID: "+empId);
 		employeeService.deleteEmp(empId);
 		return "Delete id "+empId+" successful";

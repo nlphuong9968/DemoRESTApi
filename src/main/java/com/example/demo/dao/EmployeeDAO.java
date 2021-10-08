@@ -7,71 +7,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entities.Employee;
 
 @Repository
+@Transactional(rollbackFor = Exception.class)
 public class EmployeeDAO {
 	
-	private static final Map<Long, Employee> empMap = new HashMap<Long, Employee>();
+	@Autowired
+	private SessionFactory sessionFactory;
 	
-	static {
-		initEmps();
-	}
-
-	private static void initEmps() {
-		// TODO Auto-generated method stub
-		Employee emp1 = new Employee(1L, "E01", "Test 1");
-		Employee emp2 = new Employee(2L, "E02", "Test 2");
-		Employee emp3 = new Employee(3L, "E03", "Test 3");
-		
-		empMap.put(emp1.getEmpId(), emp1);
-		empMap.put(emp2.getEmpId(), emp2);
-		empMap.put(emp3.getEmpId(), emp3);
-	}
-	
-	public Long getMaxEmpId() {
-		Set<Long> keys = empMap.keySet();
-		Long max = 0L;
-		for (Long key : keys) {
-			if(key > max) {
-				max = key;
-			}
-		}
-		return max;
-	}
-	
-	public Employee getEmp(Long empId) {
-		return empMap.get(empId);
+	public Employee getEmp(Integer empId) {
+		Session session = sessionFactory.getCurrentSession();
+		Employee emp = session.get(Employee.class, empId);
+		return emp;
 	}
 	
 	public Employee addEmp(Employee empForm) {
-		Long empId = this.getMaxEmpId()+1;
-		empForm.setEmpId(empId);
-		
-		empMap.put(empForm.getEmpId(), empForm);
+		Session session = sessionFactory.getCurrentSession();
+		session.save(empForm);
 		return empForm;
 	}
 	
 	public Employee updateEmp(Employee empForm) {
-		Employee empUpdate = this.getEmp(empForm.getEmpId());
-		if(empUpdate!=null) {
-			empUpdate.setEmpNo(empForm.getEmpNo());
-			empUpdate.setEmpName(empForm.getEmpName());
-		}
-		return empUpdate;
+		Session session = sessionFactory.getCurrentSession();
+		Employee emp = session.get(Employee.class, empForm.getEmpId());
+		
+		emp.setEmpNo(empForm.getEmpNo());
+		emp.setEmpName(empForm.getEmpName());
+		
+		session.update(emp);
+		
+		return emp;
 	}
 	
-	public void deleteEmp(Long empId) {
-		empMap.remove(empId);
+	public void deleteEmp(Integer empId) {
+		Session session = sessionFactory.getCurrentSession();
+		Employee emp = session.get(Employee.class, empId);
+		session.delete(emp);
 	}
 	
 	public List<Employee> getAllEmps() {
-		Collection<Employee> c = empMap.values();
-		List<Employee> list = new ArrayList<Employee>();
-		list.addAll(c);
-		return list;
+		Session session = sessionFactory.getCurrentSession();
+		@SuppressWarnings("unchecked")
+		List<Employee> employees = session.createQuery(" FROM "+Employee.class.getName()).list();
+		return employees;
 	}
 
 }

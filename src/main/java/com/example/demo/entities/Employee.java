@@ -1,9 +1,20 @@
 package com.example.demo.entities;
 
+import java.io.Serializable;
 
-public class Employee {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-	private Long empId;
+@Entity
+@Table(name = "employee")
+public class Employee implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	private Integer empId;
 	private String empNo;
 	private String empName;
 	
@@ -11,21 +22,25 @@ public class Employee {
 		
 	}
 	
-	public Employee(Long empId, String empNo, String empName) {
+	public Employee(Integer empId, String empNo, String empName) {
 		
 		this.empId = empId;
 		this.empNo = empNo;
 		this.empName = empName;
 	}
 
-	public Long getEmpId() {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "empId", unique = true, nullable = false)
+	public Integer getEmpId() {
 		return empId;
 	}
 
-	public void setEmpId(Long empId) {
+	public void setEmpId(Integer empId) {
 		this.empId = empId;
 	}
-
+	
+	@Column(name = "empNo", unique = true, nullable = false, length = 10)
 	public String getEmpNo() {
 		return empNo;
 	}
@@ -34,6 +49,7 @@ public class Employee {
 		this.empNo = empNo;
 	}
 
+	@Column(name = "empName", length = 20)
 	public String getEmpName() {
 		return empName;
 	}
