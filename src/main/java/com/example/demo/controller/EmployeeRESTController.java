@@ -74,10 +74,9 @@ public class EmployeeRESTController {
 	 */
 	@RequestMapping(value = "/employees/{empId}", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
 	@ResponseBody
-	public String deleteEmployee(@PathVariable("empId") Integer empId) {
+	public void deleteEmployee(@PathVariable("empId") Integer empId) {
 		System.out.println("(Service Side) Deleting employe with ID: "+empId);
-		employeeService.deleteEmp(empId);
-		return "Delete id "+empId+" successful";
+		employeeService.deleteEmp(empId);		
 	}
 		
 }
